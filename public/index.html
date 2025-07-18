@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>National Parks Route Finder</title>
+</head>
+<body>
+  <h1>Find National Parks Along Your Route</h1>
+  <form id="route-form">
+    <label for="start">Start Location:</label>
+    <input type="text" id="start" required>
+    <br>
+    <label for="end">Destination:</label>
+    <input type="text" id="end" required>
+    <br>
+    <button type="submit">Search</button>
+  </form>
+  <div id="results"></div>
+
+  <script>
+    document.getElementById('route-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const start = document.getElementById('start').value;
+      const end = document.getElementById('end').value;
+
+      const res = await fetch('/api/parks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ start, end })
+      });
+
+      const data = await res.json();
+      document.getElementById('results').innerHTML = 
+        `<h2>Nearby Parks:</h2><ul>${data.parks.map(p => `<li>${p.name}</li>`).join('')}</ul>`;
+    });
+  </script>
+</body>
+</html>
